@@ -48,6 +48,19 @@ class CustomCameraController: UIViewController {
         return button
     }()
     
+    lazy private var cropButton: UIButton = {
+        let button = UIButton()
+        button.setImage(#imageLiteral(resourceName: "crop"), for: .normal)
+        button.imageEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
+        button.addTarget(self, action: #selector(handleCropBtn), for: .touchUpInside)
+        button.tintColor = .clear
+        button.layer.cornerRadius = 20
+        button.clipsToBounds = true
+        button.isSelected = false
+        return button
+    }()
+
+    
     lazy private var gridLayout: UIImageView = {
         let view  = UIImageView()
         view.image = #imageLiteral(resourceName: "grid")
@@ -84,6 +97,7 @@ class CustomCameraController: UIViewController {
         view.addSubview(takePhotoButton)
         view.addSubview(gridButton)
         view.addSubview(levelButton)
+        view.addSubview(cropButton)
         
         gridLayout.snp.makeConstraints { (make) in
             make.right.left.bottom.top.equalToSuperview()
@@ -119,6 +133,12 @@ class CustomCameraController: UIViewController {
             make.top.equalTo(gridButton.snp.bottom).offset(20)
         }
         
+        cropButton.snp.makeConstraints { (make) in
+            make.left.equalToSuperview().offset(20)
+            make.width.height.equalTo(40)
+            make.top.equalTo(levelButton.snp.bottom).offset(20)
+        }
+        
     }
     
     private func setUpRotation() {
@@ -135,7 +155,6 @@ class CustomCameraController: UIViewController {
                                  data.gravity.y) - .pi
             self?.levelIcon.transform =
                 CGAffineTransform(rotationAngle: CGFloat(rotation))
-             
         }
     }
     
@@ -225,6 +244,21 @@ class CustomCameraController: UIViewController {
             levelButton.setImage(#imageLiteral(resourceName: "levelBtnSelected"), for: .normal)
             levelButton.isSelected = true
             levelIcon.isHidden = false
+        }
+    }
+    
+    @objc private func handleCropBtn() {
+        if cropButton.isSelected {
+            cropButton.backgroundColor = .clear
+            cropButton.imageEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
+            cropButton.layer.borderWidth = 0
+            cropButton.isSelected = false
+        } else {
+            cropButton.imageEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+            cropButton.layer.borderWidth = 1
+            cropButton.layer.borderColor = UIColor.white.cgColor
+            cropButton.backgroundColor = #colorLiteral(red: 0.2885634601, green: 0.249982655, blue: 0.6508740187, alpha: 1)
+            cropButton.isSelected = true
         }
     }
 }
